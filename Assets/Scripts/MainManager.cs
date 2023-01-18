@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -17,6 +18,8 @@ public class MainManager : MonoBehaviour
     private int m_Points;
     
     private bool m_GameOver = false;
+
+    public Text bestScoretext;
 
     
     // Start is called before the first frame update
@@ -36,6 +39,8 @@ public class MainManager : MonoBehaviour
                 brick.onDestroyed.AddListener(AddPoint);
             }
         }
+
+        bestScoreConfig(DataManager.Instance.bestScore);
     }
 
     private void Update()
@@ -62,7 +67,7 @@ public class MainManager : MonoBehaviour
         }
     }
 
-    void AddPoint(int point)
+    public void AddPoint(int point)
     {
         m_Points += point;
         ScoreText.text = $"Score : {m_Points}";
@@ -72,5 +77,25 @@ public class MainManager : MonoBehaviour
     {
         m_GameOver = true;
         GameOverText.SetActive(true);
+        bestScoreConfig(m_Points);
+    }
+
+    public void bestScoreConfig(int Points)
+    {
+        int bestScore = DataManager.Instance.bestScore;
+
+        if (Points > bestScore)
+        {
+            bestScore = Points;
+            DataManager.Instance.bestScoreName = DataManager.Instance.playerName;
+        }
+        DataManager.Instance.bestScore = bestScore;
+
+        bestScoretext.text = "BestScore: " + DataManager.Instance.bestScoreName + ": " + bestScore;
+    }
+
+    public void ReturnToMenu()
+    {
+        SceneManager.LoadScene(0);
     }
 }
